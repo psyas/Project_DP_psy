@@ -9,7 +9,7 @@ import com.holub.ui.MenuSite;
  *
  * @include /etc/license.txt
  */
-
+/* hello world~ */
 public final class Life extends JFrame
 {	
 	private static JComponent universe;
