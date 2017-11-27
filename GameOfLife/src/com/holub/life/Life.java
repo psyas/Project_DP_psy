@@ -3,13 +3,13 @@ package com.holub.life;
 import java.awt.*;
 import javax.swing.*;
 import com.holub.ui.MenuSite;
-//jiyeon test
+
 /*******************************************************************
  * An implemenation of Conway's Game of Life.
  *
  * @include /etc/license.txt
  */
-/* hello world~ */
+/* hello world~ i am kyeo rye */
 public final class Life extends JFrame
 {	
 	private static JComponent universe;
