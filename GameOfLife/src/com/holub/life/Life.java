@@ -3,7 +3,7 @@ package com.holub.life;
 import java.awt.*;
 import javax.swing.*;
 import com.holub.ui.MenuSite;
-
+//jiyeon test
 /*******************************************************************
  * An implemenation of Conway's Game of Life.
  *
