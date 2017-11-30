@@ -99,7 +99,7 @@ import javax.swing.*;
 
 public final class MenuSite
 {
-	private volatile static JFrame		menuFrame	= null;
+	private static JFrame		menuFrame	= null;
 	private static JMenuBar		menuBar  	= null;
 
 	/*** The "requesters" table keeps track of who requested which
@@ -186,19 +186,15 @@ public final class MenuSite
 	 * (Most of these will throw a {@link NullPointerException}
 	 * if you try to use them when no menu site has been established.)
 	 */
-	
-	//establish를 뺴고 double-checking을 수행하였음
-	//menuFrame을 volatile로 설정
-	public static void establish(JFrame container)
+	public synchronized static void establish(JFrame container)
 	{
-		if(menuFrame == null) {
-			synchronized(MenuSite.class) {
-				if(menuFrame == null) {
-					menuFrame = container;
-					menuFrame.setJMenuBar(menuBar = new JMenuBar());
-				}
-			}
-		}
+		assert container != null;
+		assert menuFrame == null:
+							"Tried to establish more than one MenuSite";
+
+		menuFrame = container;
+		menuFrame.setJMenuBar( menuBar = new JMenuBar() );
+
 		assert valid();
 	}
 
