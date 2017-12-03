@@ -99,8 +99,8 @@ import javax.swing.*;
 
 public final class MenuSite
 {
-	private static JFrame		menuFrame	= null;
-	private static JMenuBar		menuBar  	= null;
+	private static volatile JFrame		menuFrame	= null;
+	private static volatile JMenuBar		menuBar  	= null;
 
 	/*** The "requesters" table keeps track of who requested which
 	 * menu items. It is indexed by requester and contains a
@@ -186,14 +186,17 @@ public final class MenuSite
 	 * (Most of these will throw a {@link NullPointerException}
 	 * if you try to use them when no menu site has been established.)
 	 */
-	public synchronized static void establish(JFrame container)
+	public static void establish(JFrame container)
 	{
-		assert container != null;
-		assert menuFrame == null:
-							"Tried to establish more than one MenuSite";
-
-		menuFrame = container;
-		menuFrame.setJMenuBar( menuBar = new JMenuBar() );
+	
+		if(menuFrame == null && menuBar == null) {
+			synchronized(MenuSite.class) {
+				if(menuFrame == null && menuBar == null) {
+					menuFrame = container;
+					menuFrame.setJMenuBar( menuBar = new JMenuBar() );
+				}
+			}
+		}
 
 		assert valid();
 	}
