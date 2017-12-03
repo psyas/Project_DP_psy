@@ -59,7 +59,7 @@ public class Universe extends JPanel//singleton pattern
 						(	DEFAULT_GRID_SIZE,
 							new Neighborhood
 							(	DEFAULT_GRID_SIZE,
-								new Resident()
+								new ResidentBasic()
 							)
 						);
 
@@ -169,7 +169,7 @@ public class Universe extends JPanel//singleton pattern
 					theInstance = new Universe();
 			}
 		}
-		theInstance = new Universe();
+		
 		return theInstance;
 	}
 

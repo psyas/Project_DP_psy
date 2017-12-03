@@ -17,7 +17,7 @@ import com.holub.life.Universe;
  * @include /etc/license.txt
  */
 
-public final class Resident implements Cell
+public abstract class Resident implements Cell
 {
 	private static final Color BORDER_COLOR = Colors.DARK_YELLOW;
 	private static final Color LIVE_COLOR 	= Color.RED;
@@ -32,36 +32,47 @@ public final class Resident implements Cell
 	 *  @return true if the cell is not stable (will change state on the
 	 *  next transition().
 	 */
-	public boolean figureNextState(
-				Cell north, 	Cell south,
-				Cell east, 		Cell west,
-				Cell northeast, Cell northwest,
-				Cell southeast, Cell southwest )
-		{
-			verify( north, 		"north"		);
-			verify( south, 		"south"		);
-			verify( east, 		"east"		);
-			verify( west, 		"west"		);
-			verify( northeast,	"northeast"	);
-			verify( northwest,	"northwest" );
-			verify( southeast,	"southeast" );
-			verify( southwest,	"southwest" );
-
+	
+	/* Template Method Pattern */
+	public final boolean figureNextState(
+							Cell north, 	Cell south,
+							Cell east, 		Cell west,
+							Cell northeast, Cell northwest,
+							Cell southeast, Cell southwest )
+	{
+		verifyAll(north, south, east, west, northeast, northwest, southeast, southwest);
+		
 		int neighbors = 0;
-
-		if( north.	  isAlive()) ++neighbors;
-		if( south.	  isAlive()) ++neighbors;
-		if( east. 	  isAlive()) ++neighbors;
-		if( west. 	  isAlive()) ++neighbors;
-		if( northeast.isAlive()) ++neighbors;
-		if( northwest.isAlive()) ++neighbors;
-		if( southeast.isAlive()) ++neighbors;
-		if( southwest.isAlive()) ++neighbors;
-
-		willBeAlive = (neighbors==3 || (amAlive && neighbors==2));
+		neighbors = countNeighbors(north, south, east, west, northeast, northwest, southeast, southwest);
+		willBeAlive = destinifyCell(this.amAlive, neighbors);
 		return !isStable();
 	}
 
+	private void verifyAll(
+			Cell north, 	Cell south,
+			Cell east, 		Cell west,
+			Cell northeast, Cell northwest,
+			Cell southeast, Cell southwest)
+	{
+		verify( north, 		"north"		);
+		verify( south, 		"south"		);
+		verify( east, 		"east"		);
+		verify( west, 		"west"		);
+		verify( northeast,	"northeast"	);
+		verify( northwest,	"northwest" );
+		verify( southeast,	"southeast" );
+		verify( southwest,	"southwest" );
+		
+	}
+	
+	public abstract int countNeighbors(
+			Cell north, 	Cell south,
+			Cell east, 		Cell west,
+			Cell northeast, Cell northwest,
+			Cell southeast, Cell southwest);
+	
+	public abstract boolean destinifyCell(boolean alive, int neighbors);
+	
 	private void verify( Cell c, String direction )
 	{	assert (c instanceof Resident) || (c == Cell.DUMMY)
 				: "incorrect type for " + direction +  ": " +
@@ -104,7 +115,7 @@ public final class Resident implements Cell
 
 	public void	   clear()			{amAlive = willBeAlive = false; }
 	public boolean isAlive()		{return amAlive;			    }
-	public Cell    create()			{return new Resident();			}
+	public Cell    create()			{return new ResidentBasic();			}
 	public int 	   widthInCells()	{return 1;}
 
 	public Direction isDisruptiveTo()
