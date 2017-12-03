@@ -38,15 +38,20 @@ public class Clock
 	{	createMenus();
 	}
 
-	private static Clock instance;
+	private volatile static Clock instance;
 
 	/** The clock is a singleton. Get a reference to it by calling
 	 *  <code>Clock.instance()</code>. It's illegal to call
 	 *  <code>new Clock()</code>.
 	 */
-	public synchronized static Clock instance()
-	{	if( instance == null )
-			instance = new Clock();
+
+	public static Clock instance()
+	{	if( instance == null ){
+		synchronized (Clock.class){
+			if(instance == null)
+				instance = new Clock();
+		}
+	}
 		return instance;
 	}
 
