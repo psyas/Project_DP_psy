@@ -38,15 +38,20 @@ public class Clock
 	{	createMenus();
 	}
 
-	private static Clock instance;
+	private volatile static Clock instance;
 
 	/** The clock is a singleton. Get a reference to it by calling
 	 *  <code>Clock.instance()</code>. It's illegal to call
 	 *  <code>new Clock()</code>.
 	 */
-	public synchronized static Clock instance()
-	{	if( instance == null )
-			instance = new Clock();
+
+	public static Clock instance()
+	{	if( instance == null ){
+		synchronized (Clock.class){
+			if(instance == null)
+				instance = new Clock();
+		}
+	}
 		return instance;
 	}
 
@@ -126,7 +131,6 @@ public class Clock
 	public void addClockListener( Listener observer )
 	{	publisher.subscribe(observer);
 	}
-
 	/** Implement this interface to be notified about clock ticks.
 	 *  @see Clock
 	 */
@@ -138,14 +142,12 @@ public class Clock
 	 *  a tick. Useful for forcing a tick when the clock is
 	 *  stopped. (Life uses this for single stepping.)
 	 */
+
+
+	////////////////////////////////////////////////////////////////////////find///////////
 	public void tick()
 	{	publisher.publish
-		(	new Publisher.Distributor()
-			{	public void deliverTo( Object subscriber )
-				{	if( !menuIsActive() )
-						((Listener)subscriber).tick();
-				}
-			}
+		(	new Distributor.TickDistributor()
 		);
 	}
 
